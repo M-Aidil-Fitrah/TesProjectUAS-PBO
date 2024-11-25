@@ -1,0 +1,1 @@
+Transaksi{idTransaksi='A8EK', username='Nanda', total=16500, status='PENDING', pembayaran=Bank, barangList=Pensil (x3), Sticky Notes (x6), }

@@ -1,0 +1,3 @@
+33,Buku,5000,5
+23,Sticky Notes,7000,6
+13,Pensil,2500,3
