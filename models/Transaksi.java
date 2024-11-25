@@ -59,45 +59,47 @@ public class Transaksi {
     }
 
     public String prosesPembayaran(Scanner scanner) {
-        return pembayaran.prosesPembayaran(scanner);  
+        return pembayaran.prosesPembayaran(scanner);
     }
 
-public void simpanKeFile() {
-    File file = new File("data/transactions.csv");
-    try {
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
-        }
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            writer.write(idTransaksi + "," + username + "," + (int) (total * 100) + "," + status + "," + pembayaran.getClass().getSimpleName());
-
-            for (Barang barang : barangList) {
-                writer.write("," + barang.getNama() + " (x" + barang.getStok() + ")");
+    public void simpanKeFile() {
+        File file = new File("data/transactions.csv");
+        try {
+            if (!file.exists()) {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
             }
 
-            writer.newLine();  
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+                writer.write(idTransaksi + "," + username + "," + (int) (total * 100) + "," + status + "," + pembayaran.getClass().getSimpleName());
+
+                for (Barang barang : barangList) {
+                    writer.write("," + barang.getNama() + " (x" + barang.getStok() + ")");
+                }
+
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error: Tidak dapat menyimpan transaksi ke file.");
         }
-    } catch (IOException e) {
-        System.out.println("Error: Tidak dapat menyimpan transaksi ke file.");
     }
-}
 
     @Override
     public String toString() {
         StringBuilder barangStr = new StringBuilder();
-        for (Barang barang : barangList) {
-            barangStr.append(barang.getNama()).append(" (x").append(barang.getStok()).append("), ");
+        if (barangList != null) {
+            for (Barang barang : barangList) {
+                barangStr.append(barang.getNama()).append(" (x").append(barang.getStok()).append("), ");
+            }
         }
 
-        return "Transaksi{" +
-                "idTransaksi='" + idTransaksi + '\'' +
-                ", username='" + username + '\'' +
-                ", total=" + total +  
-                ", status='" + status + '\'' +
-                ", pembayaran=" + pembayaran.getClass().getSimpleName() +
-                ", barangList=" + barangStr +
-                '}';
+    return "Transaksi{" +
+            "idTransaksi='" + idTransaksi + '\'' +
+            ", username='" + username + '\'' +
+            ", total=" + total +
+            ", status='" + status + '\'' +
+            ", pembayaran=" + (pembayaran != null ? pembayaran.getClass().getSimpleName() : "null") +
+            ", barangList=" + barangStr +
+            '}';
     }
 }
