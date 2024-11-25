@@ -22,7 +22,8 @@ public class CustomerDriver extends Driver {
             System.out.println("2. Tambah ke Keranjang");
             System.out.println("3. Checkout");
             System.out.println("4. Lihat Riwayat Belanja");
-            System.out.println("5. Keluar");
+            System.out.println("5. Lihat Status Transaksi");
+            System.out.println("6. Keluar");
             System.out.print("Pilih opsi: ");
             int opsi = Integer.parseInt(scanner.nextLine());
 
@@ -40,7 +41,10 @@ public class CustomerDriver extends Driver {
                     customer.lihatRiwayat();
                     break;
                 case 5:
-                    return;  
+                    customer.lihatStatusTransaksi(); // New functionality
+                    break;
+                case 6:
+                    return;
                 default:
                     System.out.println("Pilihan tidak valid!");
             }
@@ -50,7 +54,7 @@ public class CustomerDriver extends Driver {
     private void tambahKeKeranjang(Scanner scanner) {
         listBarang.lihatBarang();
     
-        System.out.println("\nTambahkan barang ke keranjang ");
+        System.out.println("\nTambahkan barang ke keranjang");
         System.out.print("Masukkan ID barang: ");
         int id = Integer.parseInt(scanner.nextLine());
         System.out.print("Masukkan jumlah: ");
