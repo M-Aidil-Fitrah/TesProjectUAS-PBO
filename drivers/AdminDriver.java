@@ -5,19 +5,19 @@ import java.io.*;
 import java.util.*;
 
 public class AdminDriver extends Driver {
-    private Admin admin;  
-    private ListBarang listBarang;  
-    private ArrayList<Transaksi> listTransaksi;  
+    private Admin admin;
+    private ListBarang listBarang;
+    private ArrayList<Transaksi> listTransaksi;
 
     public AdminDriver(Admin admin, ListBarang listBarang) {
         this.admin = admin;
         this.listBarang = listBarang;
         this.listTransaksi = new ArrayList<>();
-        muatTransaksiDariFile();  
+        muatTransaksiDariFile();
     }
 
     @Override
-    public void menu() {  
+    public void menu() {
         Scanner scanner = new Scanner(System.in);
         
         while (true) {
@@ -28,7 +28,8 @@ public class AdminDriver extends Driver {
             System.out.println("3. Edit Barang");
             System.out.println("4. Lihat Barang");
             System.out.println("5. Lihat Transaksi");
-            System.out.println("6. Keluar");
+            System.out.println("6. Terima Transaksi"); // New option
+            System.out.println("7. Keluar");
             System.out.print("Pilih opsi: ");
             int opsi = Integer.parseInt(scanner.nextLine());
 
@@ -49,7 +50,10 @@ public class AdminDriver extends Driver {
                     lihatTransaksi();
                     break;
                 case 6:
-                    return;   
+                    terimaTransaksi(scanner); // New functionality
+                    break;
+                case 7:
+                    return;
                 default:
                     System.out.println("Pilihan tidak valid!");
             }
@@ -62,9 +66,9 @@ public class AdminDriver extends Driver {
         } else {
             System.out.println("=== Daftar Transaksi ===");
             for (Transaksi transaksi : listTransaksi) {
-                System.out.println("ID Transaksi: " + transaksi.getIdTransaksi() + 
-                                   ", Customer: " + transaksi.getUsername() + 
-                                   ", Total: Rp" + transaksi.getTotal() + 
+                System.out.println("ID Transaksi: " + transaksi.getIdTransaksi() +
+                                   ", Customer: " + transaksi.getUsername() +
+                                   ", Total: Rp" + transaksi.getTotal() +
                                    ", Status: " + transaksi.getStatus());
             }
         }
@@ -72,14 +76,28 @@ public class AdminDriver extends Driver {
 
     public void tambahTransaksi(Transaksi transaksi) {
         listTransaksi.add(transaksi);
-        simpanTransaksiKeFile(transaksi);  
+        simpanTransaksiKeFile(transaksi);
     }
 
-    
+    public void terimaTransaksi(Scanner scanner) {
+        System.out.print("Masukkan ID Transaksi yang ingin diterima: ");
+        String idTransaksi = scanner.nextLine();
+
+        for (Transaksi transaksi : listTransaksi) {
+            if (transaksi.getIdTransaksi().equals(idTransaksi)) {
+                transaksi.setStatus("SELESAI");
+                simpanTransaksiKeFile(transaksi);
+                System.out.println("Transaksi ID " + idTransaksi + " telah diterima.");
+                return;
+            }
+        }
+        System.out.println("Transaksi dengan ID " + idTransaksi + " tidak ditemukan.");
+    }
+
     private void muatTransaksiDariFile() {
         File file = new File("data/transactions.txt");
         if (!file.exists()) {
-            return;  
+            return;
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -92,7 +110,7 @@ public class AdminDriver extends Driver {
                     int total = Integer.parseInt(parts[2].split("=")[1].trim());
                     String status = parts[3].split("=")[1].trim().replace("'", "");
 
-                    Transaksi transaksi = new Transaksi(idTransaksi, username, total, status, null, null); 
+                    Transaksi transaksi = new Transaksi(idTransaksi, username, total, status, null, null);
                     listTransaksi.add(transaksi);
                 }
             }
@@ -103,19 +121,21 @@ public class AdminDriver extends Driver {
 
     private void simpanTransaksiKeFile(Transaksi transaksi) {
         File file = new File("data/transactions.txt");
-
+    
         try {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
-
+    
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
                 writer.write(transaksi.toString());
                 writer.newLine();
             }
         } catch (IOException e) {
             System.out.println("Gagal menyimpan transaksi ke file: " + e.getMessage());
+        } catch (NullPointerException e) {
+            System.out.println("Error: Transaksi memiliki nilai null yang tidak diharapkan. Pastikan semua field telah diinisialisasi.");
         }
     }
 }
