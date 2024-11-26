@@ -66,7 +66,7 @@ public class Transaksi {
     }
 
     public void simpanKeFile() {
-        File file = new File("data/transactions.txt");
+        File file = new File("data/transactions.csv");
         try {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
