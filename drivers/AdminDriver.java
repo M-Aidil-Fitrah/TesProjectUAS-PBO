@@ -76,7 +76,7 @@ public class AdminDriver extends Driver {
 
     public void tambahTransaksi(Transaksi transaksi) {
         listTransaksi.add(transaksi);
-        simpanTransaksiKeFile(transaksi);
+        transaksi.simpanKeFile();
     }
 
     public void terimaTransaksi(Scanner scanner) {
@@ -86,7 +86,8 @@ public class AdminDriver extends Driver {
         for (Transaksi transaksi : listTransaksi) {
             if (transaksi.getIdTransaksi().equals(idTransaksi)) {
                 transaksi.setStatus("SELESAI");
-                simpanTransaksiKeFile(transaksi);
+                //simpanTransaksiKeFile(transaksi);
+                transaksi.simpanKeFile();
                 System.out.println("Transaksi ID " + idTransaksi + " telah diterima.");
                 return;
             }
@@ -116,26 +117,6 @@ public class AdminDriver extends Driver {
             }
         } catch (IOException e) {
             System.out.println("Error saat membaca file transaksi: " + e.getMessage());
-        }
-    }
-
-    private void simpanTransaksiKeFile(Transaksi transaksi) {
-        File file = new File("data/transactions.txt");
-    
-        try {
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-    
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-                writer.write(transaksi.toString());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.out.println("Gagal menyimpan transaksi ke file: " + e.getMessage());
-        } catch (NullPointerException e) {
-            System.out.println("Error: Transaksi memiliki nilai null yang tidak diharapkan. Pastikan semua field telah diinisialisasi.");
         }
     }
 }
