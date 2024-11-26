@@ -5,12 +5,22 @@ public class Barang {
     private String nama;
     private int harga;
     private int stok;
+    private int jumlahCheckout; // Tambahkan atribut ini
 
     public Barang(int id, String nama, int harga, int stok) {
         this.id = id;
         this.nama = nama;
         this.harga = harga;
         this.stok = stok;
+    }
+
+    // Tambahkan getter dan setter untuk jumlahCheckout
+    public int getJumlahCheckout() {
+        return jumlahCheckout;
+    }
+
+    public void setJumlahCheckout(int jumlahCheckout) {
+        this.jumlahCheckout = jumlahCheckout;
     }
 
     public int getId() {
