@@ -47,7 +47,7 @@ public class Customer extends Akun {
         List<Barang> barangList = new ArrayList<>(keranjang.getBarangKeranjang().keySet());
 
         Transaksi transaksi = new Transaksi(idTransaksi, getUsername(), totalHarga, "PENDING", pembayaran, barangList);
-        simpanTransaksiKeFile(transaksi);
+        transaksi.simpanKeFile();
 
         Invoice invoice = new Invoice(idTransaksi, getUsername(), totalHarga, "PENDING", pembayaran);
         invoiceSelesai.add(invoice);
@@ -132,24 +132,6 @@ public class Customer extends Akun {
             }
         } catch (IOException e) {
             System.out.println("Error saat membaca file transaksi: " + e.getMessage());
-        }
-    }
-
-    private void simpanTransaksiKeFile(Transaksi transaksi) {
-        File file = new File("data/transactions.txt");
-
-        try {
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-                writer.write(transaksi.toString());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.out.println("Gagal menyimpan transaksi ke file: " + e.getMessage());
         }
     }
 }
