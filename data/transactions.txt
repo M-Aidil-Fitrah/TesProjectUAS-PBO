@@ -1,1 +1,9 @@
-Transaksi{idTransaksi='A8EK', username='Nanda', total=16500, status='PENDING', pembayaran=Bank, barangList=Pensil (x3), Sticky Notes (x6), }
+idTransaksi=X9P4,username=Nanda,total=2500,status=PENDING,pembayaran=Bank,barang=Pensil (x0)
+idTransaksi=X9P4,username=Nanda,total=2500,status=SELESAI,pembayaran=Bank,barang=barang=Pensil (x0)
+idTransaksi=OREL,username=Nanda,total=15000,status=PENDING,pembayaran=COD,barang=Buku (x0)
+idTransaksi=OREL,username=Nanda,total=15000,status=SELESAI,pembayaran=COD,barang=barang=Buku (x0)
+idTransaksi=U8O6,username=dell,total=7500,status=PENDING,pembayaran=Bank,barang=Sampul (x0)
+idTransaksi=BN1D,username=dell,total=5000,status=PENDING,pembayaran=Bank,barang=Sampul (x0)
+idTransaksi=BN1D,username=dell,total=5000,status=SELESAI,pembayaran=Bank,barang=barang=Sampul (x0)
+idTransaksi=R6H4,username=dell,total=15000,status=PENDING,pembayaran=Bank,barang=Buku (x0)
+idTransaksi=XGMC,username=dell,total=7000,status=PENDING,pembayaran=QRIS,barang=Sticky Notes (x0)
