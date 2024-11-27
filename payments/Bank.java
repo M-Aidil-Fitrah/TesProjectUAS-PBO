@@ -27,4 +27,9 @@ public class Bank extends Pembayaran {
 
         return "Pembayaran via Bank berhasil! Nama Bank: " + namaBank + ", Rekening: " + nomorRekening;
     }
+
+    @Override
+    public String toString() {
+        return "Bank";
+    }
 }

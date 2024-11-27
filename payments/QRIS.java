@@ -31,4 +31,9 @@ public class QRIS extends Pembayaran {
         Random random = new Random();
         return "QR-" + random.nextInt(1000000); 
     }
+
+    @Override
+    public String toString() {
+        return "QRIS";
+    }
 }

@@ -21,4 +21,9 @@ public class COD extends Pembayaran {
 
         return "Pesanan dengan metode COD berhasil diproses!";
     }
+
+    @Override
+    public String toString() {
+        return "COD";
+    }
 }
