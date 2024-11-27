@@ -144,7 +144,7 @@ public class AdminDriver extends Driver {
     public void terimaTransaksi(Scanner scanner) {
         System.out.print("Masukkan ID Transaksi yang ingin diterima: ");
         String idTransaksi = scanner.nextLine();
-
+    
         for (Transaksi transaksi : listTransaksi) {
             if (transaksi.getIdTransaksi().equals(idTransaksi)) {
                 if (transaksi.getStatus().equals("PENDING")) {
