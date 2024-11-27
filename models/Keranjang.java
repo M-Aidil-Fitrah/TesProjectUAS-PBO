@@ -17,16 +17,16 @@ public class Keranjang {
         }
     }
 
-    public void hapusBarang(Barang barang) {
-        barangKeranjang.remove(barang);
-    }
+    // public void hapusBarang(Barang barang) {
+    //     barangKeranjang.remove(barang);
+    // }
 
-    public void tampilkanKeranjang() {
-        System.out.println("=== Barang di Keranjang ===");
-        for (Map.Entry<Barang, Integer> entry : barangKeranjang.entrySet()) {
-            System.out.println(entry.getKey().getNama() + " - " + entry.getValue() + " x " + entry.getKey().getHarga());
-        }
-    }
+    // public void tampilkanKeranjang() {
+    //     System.out.println("=== Barang di Keranjang ===");
+    //     for (Map.Entry<Barang, Integer> entry : barangKeranjang.entrySet()) {
+    //         System.out.println(entry.getKey().getNama() + " - " + entry.getValue() + " x " + entry.getKey().getHarga());
+    //     }
+    // }
 
     public int totalHarga() {
         int total = 0;

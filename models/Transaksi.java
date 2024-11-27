@@ -65,33 +65,78 @@ public class Transaksi {
         return pembayaran.prosesPembayaran(scanner);
     }
 
-    public void simpanKeFile() {
-        File file = new File("data/transactions.txt");
+    public void simpanTransaksiKeFile() {
+        File file = new File("data/transactions.txt"); // Mengganti ekstensi ke .txt
         try {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
-
+            
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-                writer.write("Transaksi{idTransaksi='" + idTransaksi + '\'' +
-                             ", username='" + username + '\'' +
-                             ", total=" + total +
-                             ", status='" + status + '\'' +
-                             ", pembayaran=" + (pembayaran != null ? pembayaran.getClass().getSimpleName() : "null") +
-                             ", barangList=");
-
+                // Format: idTransaksi=TR001,username=Nurul,total=7000,status=PENDING,pembayaran=QRIS,barang=Sticky Notes (x1),Pen (x2)
+                writer.write("idTransaksi=" + idTransaksi + 
+                             ",username=" + username + 
+                             ",total=" + total + 
+                             ",status=" + status + 
+                             ",pembayaran=" + pembayaran.getClass().getSimpleName());
+                
+                // Menambahkan barang ke dalam format
                 if (barangList != null) {
-                    for (Barang barang : barangList) {
-                        writer.write(barang.getNama() + " (x" + barang.getJumlahCheckout() + "), ");
+                    writer.write(",barang=");
+                    for (int i = 0; i < barangList.size(); i++) {
+                        Barang barang = barangList.get(i);
+                        writer.write(barang.getNama() + " (x" + barang.getJumlahCheckout() + ")");
+                        if (i < barangList.size() - 1) {
+                            writer.write(","); // Pisahkan barang dengan koma
+                        }
                     }
                 }
+                
                 writer.newLine();
             }
         } catch (IOException e) {
             System.out.println("Error: Tidak dapat menyimpan transaksi ke file.");
         }
     }
+    
+    // public void simpanTransaksiKeFile() {
+    //     File file = new File("data/transactions.csv");
+    //     try {
+    //         if (!file.exists()) {
+    //             file.getParentFile().mkdirs();
+    //             file.createNewFile();
+    //         }
+    //         // try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+    //         //     writer.write("Transaksi{idTransaksi='" + idTransaksi + '\'' +
+    //         //                  ", username='" + username + '\'' +
+    //         //                  ", total=" + total +
+    //         //                  ", status='" + status + '\'' +
+    //         //                  ", pembayaran=" + (pembayaran != null ? pembayaran.getClass().getSimpleName() : "null") +
+    //         //                  ", barangList=");
+
+    //         //     if (barangList != null) {
+    //         //         for (Barang barang : barangList) {
+    //         //             writer.write(barang.getNama() + " (x" + barang.getJumlahCheckout() + "), ");
+    //         //         }
+    //         //     }
+    //         //     writer.newLine();
+    //     // }
+    //         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+    //             writer.write(idTransaksi + "," + username + "," + total + "," + status + "," + pembayaran.getClass().getSimpleName());
+    //             //writer.write(idTransaksi + "," + username + "," + total + "," + status + "," + (pembayaran!= null ? pembayaran.getClass().getSimpleName() : "null"));
+
+    //             for (Barang barang : barangList) {
+    //                 writer.write("," + barang.getNama() + " (x" + barang.getJumlahCheckout() + ")");
+    //             }
+
+    //             writer.newLine();
+    //         }
+            
+    //     } catch (IOException e) {
+    //         System.out.println("Error: Tidak dapat menyimpan transaksi ke file.");
+    //     }
+    // }
 
     @Override
     public String toString() {
@@ -107,7 +152,8 @@ public class Transaksi {
                 ", username='" + username + '\'' +
                 ", total=" + total +
                 ", status='" + status + '\'' +
-                ", pembayaran=" + (pembayaran != null ? pembayaran.getClass().getSimpleName() : "null") +
+                ", pembayaran=" + pembayaran.getClass().getSimpleName() +
+                //", pembayaran=" + (pembayaran != null ? pembayaran.getClass().getSimpleName() : "null") +
                 ", barangList=" + barangStr +
                 '}';
     }

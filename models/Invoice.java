@@ -6,14 +6,12 @@ import payments.Pembayaran;
 
 public class Invoice {
     private String idTransaksi;
-    private String username;
     private int total;
     private String status;
     private Pembayaran pembayaran;  
 
-    public Invoice(String idTransaksi, String username, int total, String status, Pembayaran pembayaran) {
+    public Invoice(String idTransaksi, int total, String status, Pembayaran pembayaran) {
         this.idTransaksi = idTransaksi;
-        this.username = username;
         this.total = total;
         this.status = status;
         this.pembayaran = pembayaran;  
@@ -23,16 +21,16 @@ public class Invoice {
         return idTransaksi;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public int getTotal() {
         return total;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Pembayaran getPembayaran() {
@@ -51,7 +49,6 @@ public class Invoice {
     public String toString() {
         return "Invoice{" +
                 "idTransaksi='" + idTransaksi + '\'' +
-                ", username='" + username + '\'' +
                 ", total=" + total +
                 ", status='" + status + '\'' +
                 ", pembayaran=" + pembayaran.getClass().getSimpleName() +  

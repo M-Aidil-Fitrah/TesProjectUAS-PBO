@@ -14,6 +14,11 @@ public class Barang {
         this.stok = stok;
     }
 
+    public Barang(String nama, int jumlahCheckout) {
+        this.nama = nama;
+        this.jumlahCheckout = jumlahCheckout;
+    }
+
     // Tambahkan getter dan setter untuk jumlahCheckout
     public int getJumlahCheckout() {
         return jumlahCheckout;

@@ -52,7 +52,7 @@ public class ListBarang {
         int stok = Integer.parseInt(scanner.nextLine());
     
         barangList.add(new Barang(id, nama, harga, stok));
-        simpanKeFile();
+        simpanBarangKeFile();
         System.out.println("Barang berhasil ditambahkan.");
     }
 
@@ -62,7 +62,7 @@ public class ListBarang {
     
         boolean removed = barangList.removeIf(barang -> barang.getId() == id);
         if (removed) {
-            simpanKeFile();
+            simpanBarangKeFile();
             System.out.println("Barang berhasil dihapus.");
         } else {
             System.out.println("Barang dengan ID tersebut tidak ditemukan.");
@@ -82,7 +82,7 @@ public class ListBarang {
                 System.out.print("Masukkan stok baru: ");
                 barang.setStok(Integer.parseInt(scanner.nextLine()));
     
-                simpanKeFile();  
+                simpanBarangKeFile();  
                 System.out.println("Barang berhasil diubah.");
                 return;
             }
@@ -97,7 +97,7 @@ public class ListBarang {
         }
     }
 
-    private void simpanKeFile() {
+    void simpanBarangKeFile() {
         File file = new File("data/products.txt");
     
         try {

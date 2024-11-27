@@ -47,21 +47,32 @@ public class Customer extends Akun {
         List<Barang> barangList = new ArrayList<>(keranjang.getBarangKeranjang().keySet());
 
         Transaksi transaksi = new Transaksi(idTransaksi, getUsername(), totalHarga, "PENDING", pembayaran, barangList);
+        //simpanTransaksiKeFile(transaksi);
         transaksi.simpanTransaksiKeFile();
 
-        Invoice invoice = new Invoice(idTransaksi, getUsername(), totalHarga, "PENDING", pembayaran);
+        Invoice invoice = new Invoice(idTransaksi, totalHarga, "PENDING", pembayaran);
         invoiceSelesai.add(invoice);
 
         System.out.println("Checkout berhasil. ID Transaksi: " + idTransaksi);
 
+        // Perbarui stok di ListBarang
         for (Barang barang : barangList) {
             int jumlahDibeli = keranjang.getBarangKeranjang().get(barang);
             Barang stokBarang = listBarang.getBarangById(barang.getId());
             if (stokBarang != null) {
-                stokBarang.setStok(stokBarang.getStok() - jumlahDibeli);
+                if (stokBarang.getStok() >= jumlahDibeli) {
+                    stokBarang.setStok(stokBarang.getStok() - jumlahDibeli); // Kurangi stok
+                } else {
+                    System.out.println("Stok tidak mencukupi untuk barang: " + stokBarang.getNama());
+                    return; // Batalkan jika stok tidak mencukupi
+                }
+            } else {
+                System.out.println("Barang dengan ID " + barang.getId() + " tidak ditemukan di daftar barang.");
             }
         }
 
+        // Simpan perubahan stok ke file products.txt
+        listBarang.simpanBarangKeFile();
         keranjang.kosongkan();
     }
 
@@ -106,8 +117,64 @@ public class Customer extends Akun {
 
     public void lihatRiwayat() {
         System.out.println("=== Riwayat Belanja ===");
-        for (Invoice invoice : invoiceSelesai) {
-            System.out.println("ID Transaksi: " + invoice.getIdTransaksi() + ", Total: " + invoice.getTotal() + ", Status: " + invoice.getStatus());
+    
+        List<Invoice> riwayatSelesai = new ArrayList<>();
+    
+        // Membaca file transaksi dan memuat transaksi yang statusnya SELESAI ke dalam riwayatSelesai
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/transactions.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 5) {
+                    String idTransaksi = parts[0].split("=")[1].trim();
+                    String status = parts[3].split("=")[1].trim();
+                    String pembayaranStr = parts[4].split("=")[1].trim();
+
+                    // Hanya menampilkan transaksi yang statusnya SELESAI
+                    if ("SELESAI".equals(status)) {
+                        // Mendapatkan total transaksi dari file
+                        int total = Integer.parseInt(parts[2].split("=")[1].trim());
+
+                        // Menentukan jenis pembayaran berdasarkan string yang ada
+                        Pembayaran pembayaran = null;
+                        switch (pembayaranStr) {
+                            case "Bank":
+                                pembayaran = new Bank();
+                                break;
+                            case "QRIS":
+                                pembayaran = new QRIS();
+                                break;
+                            case "COD":
+                                pembayaran = new COD();
+                                break;
+                            default:
+                                System.out.println("Pembayaran tidak dikenal: " + pembayaranStr);
+                                break;
+                        }
+
+                        // Buat invoice untuk transaksi selesai dan masukkan ke riwayat
+                        if (pembayaran != null) {
+                            Invoice invoice = new Invoice(idTransaksi, total, "SELESAI", pembayaran);
+                            riwayatSelesai.add(invoice);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error saat membaca file transaksi: " + e.getMessage());
+        }   
+        // Jika tidak ada transaksi selesai
+        if (riwayatSelesai.isEmpty()) {
+            System.out.println("Belum ada transaksi yang selesai.");
+            return;
+        }
+    
+        // Menampilkan riwayat belanja
+        for (Invoice invoice : riwayatSelesai) {
+            System.out.println("ID Transaksi: " + invoice.getIdTransaksi() +
+                               ", Total: Rp" + invoice.getTotal() +
+                               ", Status: " + invoice.getStatus() +
+                               ", Pembayaran: " + invoice.getPembayaran()); // Menampilkan string pembayaran langsung
         }
     }
 
@@ -121,17 +188,91 @@ public class Customer extends Akun {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             boolean found = false;
+            String usernameDicari = "username=" + getUsername(); 
+            
             while ((line = reader.readLine()) != null) {
-                if (line.contains("username='" + getUsername() + "'")) {
-                    System.out.println(line);
+                if (line.contains(usernameDicari)) {
                     found = true;
+                    // Pisahkan data transaksi berdasarkan koma
+                    String[] parts = line.split(",");
+                    String idTransaksi = parts[0].split("=")[1].trim();
+                    String total = parts[2].split("=")[1].trim();
+                    String status = parts[3].split("=")[1].trim();
+                    String pembayaran = parts[4].split("=")[1].trim();
+                    String barang = line.substring(line.indexOf("barang=") + 7); // Ambil daftar barang
+                    
+                    // Format output
+                    System.out.println("=================================");
+                    System.out.println("ID Transaksi : " + idTransaksi);
+                    System.out.println("Total        : " + total);
+                    System.out.println("Status       : " + status);
+                    System.out.println("Pembayaran   : " + pembayaran);
+                    System.out.println("Daftar Barang: " + barang);
+                    System.out.println("=================================");
                 }
             }
+        
             if (!found) {
                 System.out.println("Tidak ada transaksi ditemukan untuk pengguna ini.");
             }
         } catch (IOException e) {
             System.out.println("Error saat membaca file transaksi: " + e.getMessage());
         }
+    
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            boolean found = false;
+            String usernameDicari = "username=" + getUsername(); 
+            
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(usernameDicari)) {
+                    // Pisahkan data transaksi berdasarkan koma
+                    String[] parts = line.split(",");
+                    String idTransaksi = parts[0].split("=")[1].trim();
+                    String total = parts[2].split("=")[1].trim();
+                    String status = parts[3].split("=")[1].trim();
+                    String pembayaran = parts[4].split("=")[1].trim();
+                    String barang = line.substring(line.indexOf("barang=") + 7); // Ambil daftar barang
+                    
+                    // Menampilkan hanya transaksi yang statusnya SELESAI
+                    if ("SELESAI".equals(status)) {
+                        found = true;
+                        // Format output
+                        System.out.println("=================================");
+                        System.out.println("ID Transaksi : " + idTransaksi);
+                        System.out.println("Total        : " + total);
+                        System.out.println("Status       : " + status);
+                        System.out.println("Pembayaran   : " + pembayaran);
+                        System.out.println("Daftar Barang: " + barang);
+                        System.out.println("=================================");
+                    }
+                }
+            }
+    
+            if (!found) {
+                System.out.println("Tidak ada transaksi dengan status SELESAI ditemukan untuk pengguna ini.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error saat membaca file transaksi: " + e.getMessage());
+        }
     }
+    
+
+    // private void simpanTransaksiKeFile(Transaksi transaksi) {
+    //     File file = new File("data/transactions.txt");
+
+    //     try {
+    //         if (!file.exists()) {
+    //             file.getParentFile().mkdirs();
+    //             file.createNewFile();
+    //         }
+
+    //         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+    //             writer.write(transaksi.toString());
+    //             writer.newLine();
+    //         }
+    //     } catch (IOException e) {
+    //         System.out.println("Gagal menyimpan transaksi ke file: " + e.getMessage());
+    //     }
+    // }
 } 
