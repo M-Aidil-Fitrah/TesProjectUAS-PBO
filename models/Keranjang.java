@@ -11,8 +11,11 @@ public class Keranjang {
 
     public void tambahBarang(Barang barang, int jumlah) {
         if (barangKeranjang.containsKey(barang)) {
+            // Jika barang sudah ada di keranjang, tambahkan jumlahnya
             barangKeranjang.put(barang, barangKeranjang.get(barang) + jumlah);
         } else {
+            // Jika barang baru ditambahkan, set jumlahCheckout
+            barang.setJumlahCheckout(jumlah);
             barangKeranjang.put(barang, jumlah);
         }
     }

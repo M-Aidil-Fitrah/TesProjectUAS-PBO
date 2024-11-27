@@ -66,21 +66,20 @@ public class Transaksi {
     }
 
     public void simpanTransaksiKeFile() {
-        File file = new File("data/transactions.txt"); // Mengganti ekstensi ke .txt
+        File file = new File("data/transactions.txt");
         try {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
-            
+    
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-                // Format: idTransaksi=TR001,username=Nurul,total=7000,status=PENDING,pembayaran=QRIS,barang=Sticky Notes (x1),Pen (x2)
                 writer.write("idTransaksi=" + idTransaksi + 
                              ",username=" + username + 
                              ",total=" + total + 
                              ",status=" + status + 
                              ",pembayaran=" + pembayaran.getClass().getSimpleName());
-                
+    
                 // Menambahkan barang ke dalam format
                 if (barangList != null) {
                     writer.write(",barang=");
@@ -92,14 +91,12 @@ public class Transaksi {
                         }
                     }
                 }
-                
                 writer.newLine();
             }
         } catch (IOException e) {
             System.out.println("Error: Tidak dapat menyimpan transaksi ke file.");
         }
     }
-    
     // public void simpanTransaksiKeFile() {
     //     File file = new File("data/transactions.csv");
     //     try {

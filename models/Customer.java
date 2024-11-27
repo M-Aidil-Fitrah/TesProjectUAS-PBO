@@ -20,6 +20,8 @@ public class Customer extends Akun {
     }
 
     public void tambahKeKeranjang(Barang barang, int jumlah) {
+        // Set jumlahCheckout untuk barang yang ditambahkan
+        barang.setJumlahCheckout(jumlah);
         keranjang.tambahBarang(barang, jumlah);
         System.out.println(barang.getNama() + " telah ditambahkan ke keranjang.");
     }
@@ -184,7 +186,7 @@ public class Customer extends Akun {
             System.out.println("Belum ada transaksi.");
             return;
         }
-
+    
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             boolean found = false;
@@ -207,50 +209,23 @@ public class Customer extends Akun {
                     System.out.println("Total        : " + total);
                     System.out.println("Status       : " + status);
                     System.out.println("Pembayaran   : " + pembayaran);
-                    System.out.println("Daftar Barang: " + barang);
+                    
+                    // Parsing barang untuk mendapatkan jumlah yang benar
+                    String[] daftarBarang = barang.split(",");
+                    System.out.print("Daftar Barang: ");
+                    for (String b : daftarBarang) {
+                        String[] partsBarang = b.trim().split(" \\(x");
+                        String namaBarang = partsBarang[0];
+                        int jumlahBarang = Integer.parseInt(partsBarang[1].replace(")", ""));
+                        System.out.print(namaBarang + " (x" + jumlahBarang + "), ");
+                    }
+                    System.out.println(); // Untuk pindah ke baris baru
                     System.out.println("=================================");
                 }
             }
         
             if (!found) {
                 System.out.println("Tidak ada transaksi ditemukan untuk pengguna ini.");
-            }
-        } catch (IOException e) {
-            System.out.println("Error saat membaca file transaksi: " + e.getMessage());
-        }
-    
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            boolean found = false;
-            String usernameDicari = "username=" + getUsername(); 
-            
-            while ((line = reader.readLine()) != null) {
-                if (line.contains(usernameDicari)) {
-                    // Pisahkan data transaksi berdasarkan koma
-                    String[] parts = line.split(",");
-                    String idTransaksi = parts[0].split("=")[1].trim();
-                    String total = parts[2].split("=")[1].trim();
-                    String status = parts[3].split("=")[1].trim();
-                    String pembayaran = parts[4].split("=")[1].trim();
-                    String barang = line.substring(line.indexOf("barang=") + 7); // Ambil daftar barang
-                    
-                    // Menampilkan hanya transaksi yang statusnya SELESAI
-                    if ("SELESAI".equals(status)) {
-                        found = true;
-                        // Format output
-                        System.out.println("=================================");
-                        System.out.println("ID Transaksi : " + idTransaksi);
-                        System.out.println("Total        : " + total);
-                        System.out.println("Status       : " + status);
-                        System.out.println("Pembayaran   : " + pembayaran);
-                        System.out.println("Daftar Barang: " + barang);
-                        System.out.println("=================================");
-                    }
-                }
-            }
-    
-            if (!found) {
-                System.out.println("Tidak ada transaksi dengan status SELESAI ditemukan untuk pengguna ini.");
             }
         } catch (IOException e) {
             System.out.println("Error saat membaca file transaksi: " + e.getMessage());
